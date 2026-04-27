@@ -160,7 +160,7 @@ class Quadruplex:
 
     def OrderByCWH(self, nts, tetrad):
     # używa base pairing logic
-    return nts  # placeholder – tu wstawimy poprawkę
+        return nts  # placeholder – tu wstawimy poprawkę
 
     
     def UsedNucleotides(self, tetrad, nucl):
