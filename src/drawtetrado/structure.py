@@ -157,6 +157,12 @@ class Nucleotide:
 
 
 class Quadruplex:
+
+    def OrderByCWH(self, nts, tetrad):
+    # używa base pairing logic
+    return nts  # placeholder – tu wstawimy poprawkę
+
+    
     def UsedNucleotides(self, tetrad, nucl):
         used = {}
         for name, data in tetrad.items():
@@ -193,7 +199,8 @@ class Quadruplex:
             self.nucl_quad[nt3] = Nucleotide(nucl[nt3], used_nucl, tetr_no, onz, 2)
             self.nucl_quad[nt4] = Nucleotide(nucl[nt4], used_nucl, tetr_no, onz, 3)
 
-            self.tetrads.append([nt1, nt2, nt3, nt4])
+            ordered = self.OrderByCWH([nt1, nt2, nt3, nt4], tetrad)
+            self.tetrads.append(ordered)
 
             tetr_no = tetr_no + 1
 
@@ -591,7 +598,6 @@ class Structure:
                     if len(tetrad_pairs) == 0:
                         break
 
-            tetrad_ordered.reverse()
 
             # Do not add single tetrads as quadruplexes.
             if len(tetrad_ordered) > 1:
@@ -600,7 +606,13 @@ class Structure:
 
             self.tracts.append(tracts_all)
             self.single_tetrads.append(single_tetrads_local)
-
+        
+        
+        
+        print(tetrad_ordered)
+        
+        
+        
         # TODO check if input data was valid.
         # Are there any nucleotides and tetrads?
         return self
