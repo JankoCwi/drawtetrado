@@ -177,66 +177,66 @@ class Quadruplex:
 
         used_nucl = self.UsedNucleotides(tetrads, nucl)
         
-        pairs = structure.basePairs
-
-
-        def is_link(a, b):
-            for p in pairs:
-                if not p.get("inTetrad", False):
-                    continue
+        link_map = {}
     
-                if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
-                    lw = p.get("lw", "")
-                    return lw in ("cWH", "cHW")
-    
-        
-            return False
-
-        
-        tetr_no = 0
-        for tetrad_name in tetrads_order:
-            if tetrad_name in tetrads:
-                tetrad = tetrads[tetrad_name]
-            else:
+        for p in structure.basePairs:
+            if not p.get("inTetrad", False):
                 continue
+    
+            a = p["nt1"]
+            b = p["nt2"]
+    
+            key = (a, b)
+            rev = (b, a)
+    
+            lw = p.get("lw", "")
+            is_valid = lw in ("cWH", "cHW")
+    
+            link_map[key] = is_valid
+            link_map[rev] = is_valid
+    
+        tetr_no = 0
+    
+        for tetrad_name in tetrads_order:
+            if tetrad_name not in tetrads:
+                continue
+    
+            tetrad = tetrads[tetrad_name]
+    
             nt1 = tetrad["nt1"]
             nt2 = tetrad["nt2"]
             nt3 = tetrad["nt3"]
             nt4 = tetrad["nt4"]
             onz = tetrad["onz"]
-
+    
             print("BEFORE:", nt1, nt2, nt3, nt4)
-
-
-  
-            cycle = {nt1, nt2, nt3, nt4}
+    
+            cycle = [nt1, nt2, nt3, nt4]
+    
             order = [nt1]
             used = {nt1}
-
+    
             while len(order) < 4:
                 last = order[-1]
                 found = False
-
+    
                 for nt in cycle:
                     if nt in used:
                         continue
-
-                    if is_link(last, nt):
+    
+                    if link_map.get((last, nt), False):
                         order.append(nt)
                         used.add(nt)
                         found = True
                         break
-                        
+    
                 if not found:
                     break
-
-            if len(order) == 4:
-                order = nt1, nt2, nt3, nt4
-                
-                
+    
+            if len(order) != 4:
+                order = [nt1, nt2, nt3, nt4]
+    
             print("AFTER:", order)
-            
-            
             
 
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
