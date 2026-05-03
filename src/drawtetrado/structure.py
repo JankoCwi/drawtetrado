@@ -176,6 +176,8 @@ class Quadruplex:
         tetrads_order = structure.tetrads_order[quadruplex_id]
 
         used_nucl = self.UsedNucleotides(tetrads, nucl)
+        
+        pairs = structure.basePairs
 
         tetr_no = 0
         for tetrad_name in tetrads_order:
@@ -191,20 +193,20 @@ class Quadruplex:
 
             print("BEFORE:", nt1, nt2, nt3, nt4)
 
-            # FIXFIXFIXFIXFIXFIXFIXFIXFIXFIXIFXFIXFIX
 
-        def is_link(a,b):
+        def is_link(a, b):
             for p in pairs:
                 if not p.get("inTetrad", False):
                     continue
-
+    
                 if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
-                    lw = p.get("lw","")
+                    lw = p.get("lw", "")
                     return lw in ("cWH", "cHW")
     
+        
             return False
              
-            pairs = structure.basePairs
+  
             cycle = {nt1, nt2, nt3, nt4}
             order = [nt1]
             used = {nt1}
