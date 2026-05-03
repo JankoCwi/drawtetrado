@@ -189,6 +189,8 @@ class Quadruplex:
             nt4 = tetrad["nt4"]
             onz = tetrad["onz"]
 
+            print("BEFORE:", nt1, nt2, nt3, nt4)
+
             # FIXFIXFIXFIXFIXFIXFIXFIXFIXFIXIFXFIXFIX
 
             pairs = structure.basePairs
@@ -638,7 +640,7 @@ class Structure:
 
             tetrad_ordered.reverse()
 
-            print("BEFORE:", nt1, nt2, nt3, nt4)
+            
             print("AFTER:", ordered)
             
             # Do not add single tetrads as quadruplexes.
@@ -649,9 +651,6 @@ class Structure:
             self.tracts.append(tracts_all)
             self.single_tetrads.append(single_tetrads_local)
         
-        
-        
-        print(tetrad_ordered)
         
         
         
