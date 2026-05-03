@@ -193,10 +193,6 @@ class Quadruplex:
 
             # FIXFIXFIXFIXFIXFIXFIXFIXFIXFIXIFXFIXFIX
 
-            pairs = structure.basePairs
-
-            cycle = {nt1, nt2, nt3, nt4}
-
             def is_tetrad(a,b):
                 for p in pairs:
                     if not p.get("inTetrad", False):
@@ -204,12 +200,11 @@ class Quadruplex:
 
                     if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
                         lw = p.get("lw","")
-        
-                    if lw in ("cWH", "cHW"):
-                        return True
 
                 return False
-
+             
+            pairs = structure.basePairs
+            cycle = {nt1, nt2, nt3, nt4}
             order = [nt1]
             used = {nt1}
 
@@ -221,7 +216,7 @@ class Quadruplex:
                     if nt is used:
                         continue
 
-                    if is_link(last, nt):
+                    if is_tetrad(last, nt):
                         order.append(nt)
                         used.add(nt)
                         found = True
@@ -592,7 +587,8 @@ class Structure:
     def fromJsonDict(self, json_dict):
         for data in json_dict["nucleotides"]:
             self.addNucleotide(data["fullName"], data)
-            self.basePairs = json_dict.get("basePairs", [])
+            
+        self.basePairs = json_dict.get("basePairs", [])
 
 
         # TODO What to do with other helices/quadruplexes?
