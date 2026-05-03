@@ -15,8 +15,7 @@ using ID = int32_t;    // Level * 4 + Index;
 using Position = int32_t; // 0/1/2/3
 
 const std::vector<std::vector<Position>> permutations = {
-    {0, 1, 2, 3}, {3, 0, 1, 2}, {2, 3, 0, 1}, {1, 2, 3, 0},
-    {2, 1, 0, 3}, {3, 2, 1, 0}, {0, 3, 2, 1}, {1, 0, 3, 2}};
+    {0, 1, 2, 3}, {3, 0, 1, 2}, {2, 3, 0, 1}, {1, 2, 3, 0}};
 
 struct Solution {
   std::vector<Position> positions;
