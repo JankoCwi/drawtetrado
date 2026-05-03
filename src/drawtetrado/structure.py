@@ -193,13 +193,14 @@ class Quadruplex:
 
             # FIXFIXFIXFIXFIXFIXFIXFIXFIXFIXIFXFIXFIX
 
-            def is_tetrad(a,b):
+            def is_link(a,b):
                 for p in pairs:
                     if not p.get("inTetrad", False):
                         continue
 
                     if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
                         lw = p.get("lw","")
+                        return lw in ("cWH", "cHW")
 
                 return False
              
@@ -213,10 +214,10 @@ class Quadruplex:
                 found = False
 
                 for nt in cycle:
-                    if nt is used:
+                    if nt in used:
                         continue
 
-                    if is_tetrad(last, nt):
+                    if is_link(last, nt):
                         order.append(nt)
                         used.add(nt)
                         found = True
