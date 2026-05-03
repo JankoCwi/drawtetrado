@@ -179,6 +179,20 @@ class Quadruplex:
         
         pairs = structure.basePairs
 
+
+        def is_link(a, b):
+            for p in pairs:
+                if not p.get("inTetrad", False):
+                    continue
+    
+                if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
+                    lw = p.get("lw", "")
+                    return lw in ("cWH", "cHW")
+    
+        
+            return False
+
+        
         tetr_no = 0
         for tetrad_name in tetrads_order:
             if tetrad_name in tetrads:
@@ -194,18 +208,6 @@ class Quadruplex:
             print("BEFORE:", nt1, nt2, nt3, nt4)
 
 
-        def is_link(a, b):
-            for p in pairs:
-                if not p.get("inTetrad", False):
-                    continue
-    
-                if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
-                    lw = p.get("lw", "")
-                    return lw in ("cWH", "cHW")
-    
-        
-            return False
-             
   
             cycle = {nt1, nt2, nt3, nt4}
             order = [nt1]
