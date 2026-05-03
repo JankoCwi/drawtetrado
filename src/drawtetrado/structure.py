@@ -227,7 +227,7 @@ class Quadruplex:
                 if not found:
                     break
 
-            if (len(order) == 4:
+            if len(order) == 4:
                 order = nt1, nt2, nt3, nt4
             
             
