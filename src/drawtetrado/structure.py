@@ -592,6 +592,7 @@ class Structure:
     def fromJsonDict(self, json_dict):
         for data in json_dict["nucleotides"]:
             self.addNucleotide(data["fullName"], data)
+            self.basePairs = json_dict.get("basePairs", [])
 
 
         # TODO What to do with other helices/quadruplexes?
