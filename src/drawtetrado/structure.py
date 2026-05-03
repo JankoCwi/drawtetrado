@@ -231,6 +231,7 @@ class Quadruplex:
 
             if len(order) == 4:
                 order = nt1, nt2, nt3, nt4
+                print("AFTER:", order)
             
             
             
@@ -641,7 +642,7 @@ class Structure:
             tetrad_ordered.reverse()
 
             
-            print("AFTER:", order)
+            
             
             # Do not add single tetrads as quadruplexes.
             if len(tetrad_ordered) > 1:
