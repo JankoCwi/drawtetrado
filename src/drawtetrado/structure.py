@@ -641,7 +641,7 @@ class Structure:
             tetrad_ordered.reverse()
 
             
-            print("AFTER:", ordered)
+            print("AFTER:", order)
             
             # Do not add single tetrads as quadruplexes.
             if len(tetrad_ordered) > 1:
