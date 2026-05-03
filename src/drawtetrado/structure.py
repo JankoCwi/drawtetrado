@@ -189,6 +189,50 @@ class Quadruplex:
             nt4 = tetrad["nt4"]
             onz = tetrad["onz"]
 
+            # FIXFIXFIXFIXFIXFIXFIXFIXFIXFIXIFXFIXFIX
+
+            pairs = structure.basePairs
+
+            cycle = {nt1, nt2, nt3, nt4}
+
+            def is_tetrad(a,b):
+                for p in pairs:
+                    if not p.get("inTetrad", False):
+                        continue
+
+                    if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
+                        lw = p.get("lw","")
+        
+                    if lw in ("cWH", "cHW"):
+                        return True
+
+                return False
+
+            order = [nt1]
+            used = {nt1}
+
+            while len(order) < 4:
+                last = ordered[-1]
+                found = False
+
+                for nt in cycle:
+                    if nt is used:
+                        continue
+
+                    if is_link(last, nt):
+                        order.append(nt)
+                        used.add(nt)
+                        found = True
+                        break
+                if not found:
+                    break
+
+            if (len(order) == 4:
+                order = nt1, nt2, nt3, nt4
+            
+            
+            
+
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
             self.nucl_quad[nt3] = Nucleotide(nucl[nt3], used_nucl, tetr_no, onz, 2)
@@ -593,6 +637,9 @@ class Structure:
                         break
 
             tetrad_ordered.reverse()
+
+            print("BEFORE:", nt1, nt2, nt3, nt4)
+            print("AFTER:", ordered)
             
             # Do not add single tetrads as quadruplexes.
             if len(tetrad_ordered) > 1:
