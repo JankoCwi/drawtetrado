@@ -176,24 +176,18 @@ class Quadruplex:
         tetrads_order = structure.tetrads_order[quadruplex_id]
 
         used_nucl = self.UsedNucleotides(tetrads, nucl)
-        
-        link_map = {}
+        pairs = structure.basePairs
+
+        def is_link(a, b):
+            for p in pairs:
+                if not p.get("inTetrad", False):
+                    continue
     
-        for p in structure.basePairs:
-            if not p.get("inTetrad", False):
-                continue
+                if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
+                    lw = p.get("lw", "")
+                    return lw in ("cWH", "cHW")
     
-            a = p["nt1"]
-            b = p["nt2"]
-    
-            key = (a, b)
-            rev = (b, a)
-    
-            lw = p.get("lw", "")
-            is_valid = lw in ("cWH", "cHW")
-    
-            link_map[key] = is_valid
-            link_map[rev] = is_valid
+            return False
     
         tetr_no = 0
     
@@ -211,7 +205,7 @@ class Quadruplex:
     
             print("BEFORE:", nt1, nt2, nt3, nt4)
     
-            cycle = [nt1, nt2, nt3, nt4]
+            cycle = {nt1, nt2, nt3, nt4}
     
             order = [nt1]
             used = {nt1}
@@ -224,7 +218,7 @@ class Quadruplex:
                     if nt in used:
                         continue
     
-                    if link_map.get((last, nt), False):
+                    if is_link(last, nt):
                         order.append(nt)
                         used.add(nt)
                         found = True
@@ -237,7 +231,6 @@ class Quadruplex:
                 order = [nt1, nt2, nt3, nt4]
     
             print("AFTER:", order)
-            
 
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
