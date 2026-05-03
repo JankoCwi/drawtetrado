@@ -193,16 +193,16 @@ class Quadruplex:
 
             # FIXFIXFIXFIXFIXFIXFIXFIXFIXFIXIFXFIXFIX
 
-            def is_link(a,b):
-                for p in pairs:
-                    if not p.get("inTetrad", False):
-                        continue
+        def is_link(a,b):
+            for p in pairs:
+                if not p.get("inTetrad", False):
+                    continue
 
-                    if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
-                        lw = p.get("lw","")
-                        return lw in ("cWH", "cHW")
-
-                return False
+                if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
+                    lw = p.get("lw","")
+                    return lw in ("cWH", "cHW")
+    
+            return False
              
             pairs = structure.basePairs
             cycle = {nt1, nt2, nt3, nt4}
