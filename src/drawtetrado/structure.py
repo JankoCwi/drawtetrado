@@ -214,7 +214,7 @@ class Quadruplex:
             used = {nt1}
 
             while len(order) < 4:
-                last = ordered[-1]
+                last = order[-1]
                 found = False
 
                 for nt in cycle:
