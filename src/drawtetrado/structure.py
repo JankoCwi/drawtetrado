@@ -222,12 +222,15 @@ class Quadruplex:
                         used.add(nt)
                         found = True
                         break
+                        
                 if not found:
                     break
 
             if len(order) == 4:
                 order = nt1, nt2, nt3, nt4
-                print("AFTER:", order)
+                
+                
+            print("AFTER:", order)
             
             
             
