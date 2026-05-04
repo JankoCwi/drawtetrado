@@ -169,25 +169,29 @@ class Quadruplex:
 
     def PrepareNucleotides(self, structure, quadruplex_id, tetrad_id):
         nucl = structure.nucleotides
+    
         if tetrad_id >= 0:
             tetrads = structure.single_tetrads[quadruplex_id][tetrad_id]
         else:
             tetrads = structure.tetrads[quadruplex_id]
+    
         tetrads_order = structure.tetrads_order[quadruplex_id]
-
         used_nucl = self.UsedNucleotides(tetrads, nucl)
         pairs = structure.basePairs
-
-        def is_link(a, b):
-            for p in pairs:
-                if not p.get("inTetrad", False):
-                    continue
     
-                if (p["nt1"] == a and p["nt2"] == b) or (p["nt1"] == b and p["nt2"] == a):
-                    lw = p.get("lw", "")
-                    return lw in ("cWH", "cHW")
+        # --- FAST LOOKUP TABLE (critical speedup) ---
+        link_map = {}
+        for p in pairs:
+            if not p.get("inTetrad", False):
+                continue
+            lw = p.get("lw", "")
+            if lw not in ("cWH", "cHW"):
+                continue
     
-            return False
+            a = p["nt1"]
+            b = p["nt2"]
+            link_map.setdefault(a, set()).add(b)
+            link_map.setdefault(b, set()).add(a)
     
         tetr_no = 0
     
@@ -205,8 +209,9 @@ class Quadruplex:
     
             print("BEFORE:", nt1, nt2, nt3, nt4)
     
-            cycle = {nt1, nt2, nt3, nt4}
+            cycle = [nt1, nt2, nt3, nt4]
     
+            # --- INLINE ORDERING (no function call) ---
             order = [nt1]
             used = {nt1}
     
@@ -214,11 +219,24 @@ class Quadruplex:
                 last = order[-1]
                 found = False
     
+                neighbors = link_map.get(last, ())
+    
+                # only check real neighbors first (FAST PATH)
+                for nt in neighbors:
+                    if nt in cycle and nt not in used:
+                        order.append(nt)
+                        used.add(nt)
+                        found = True
+                        break
+    
+                if found:
+                    continue
+    
+                # fallback brute (safe)
                 for nt in cycle:
                     if nt in used:
                         continue
-    
-                    if is_link(last, nt):
+                    if nt in neighbors:
                         order.append(nt)
                         used.add(nt)
                         found = True
@@ -231,16 +249,17 @@ class Quadruplex:
                 order = [nt1, nt2, nt3, nt4]
     
             print("AFTER:", order)
-
+    
+            # OPTIONAL: actually apply order (you weren't using it!)
+            nt1, nt2, nt3, nt4 = order
+    
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
             self.nucl_quad[nt3] = Nucleotide(nucl[nt3], used_nucl, tetr_no, onz, 2)
             self.nucl_quad[nt4] = Nucleotide(nucl[nt4], used_nucl, tetr_no, onz, 3)
-
+    
             self.tetrads.append([nt1, nt2, nt3, nt4])
-
-            tetr_no = tetr_no + 1
-
+            tetr_no += 1
 
     def GetChainFirstLast(self):
         chains = {}
