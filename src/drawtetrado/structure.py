@@ -251,14 +251,14 @@ class Quadruplex:
             print("AFTER:", order)
 
             
-            #nt1, nt2, nt3, nt4 = order
+            nt1, nt2, nt3, nt4 = order
     
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
             self.nucl_quad[nt3] = Nucleotide(nucl[nt3], used_nucl, tetr_no, onz, 2)
             self.nucl_quad[nt4] = Nucleotide(nucl[nt4], used_nucl, tetr_no, onz, 3)
     
-            self.tetrads.append([nt1, nt2, nt3, nt4])
+            self.tetrads.append(order)
             tetr_no += 1
 
     def GetChainFirstLast(self):
