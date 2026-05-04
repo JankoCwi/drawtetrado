@@ -178,8 +178,8 @@ class Quadruplex:
         tetrads_order = structure.tetrads_order[quadruplex_id]
         used_nucl = self.UsedNucleotides(tetrads, nucl)
         pairs = structure.basePairs
-    
-        # --- FAST LOOKUP TABLE (critical speedup) ---
+
+        
         link_map = {}
         for p in pairs:
             if not p.get("inTetrad", False):
@@ -211,7 +211,7 @@ class Quadruplex:
     
             cycle = [nt1, nt2, nt3, nt4]
     
-            # --- INLINE ORDERING (no function call) ---
+
             order = [nt1]
             used = {nt1}
     
@@ -221,7 +221,7 @@ class Quadruplex:
     
                 neighbors = link_map.get(last, ())
     
-                # only check real neighbors first (FAST PATH)
+ 
                 for nt in neighbors:
                     if nt in cycle and nt not in used:
                         order.append(nt)
@@ -232,7 +232,7 @@ class Quadruplex:
                 if found:
                     continue
     
-                # fallback brute (safe)
+
                 for nt in cycle:
                     if nt in used:
                         continue
@@ -249,9 +249,9 @@ class Quadruplex:
                 order = [nt1, nt2, nt3, nt4]
     
             print("AFTER:", order)
-    
-            # OPTIONAL: actually apply order (you weren't using it!)
-            nt1, nt2, nt3, nt4 = order
+
+            
+            #nt1, nt2, nt3, nt4 = order
     
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
