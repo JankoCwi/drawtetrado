@@ -251,7 +251,6 @@ class Quadruplex:
             print("AFTER:", order)
 
             
-            nt1, nt2, nt3, nt4 = order
     
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
