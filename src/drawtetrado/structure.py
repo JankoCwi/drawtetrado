@@ -231,23 +231,8 @@ class Quadruplex:
                         used.add(nt)
                         found = True
                         break
-    
-                if found:
-                    continue
-    
 
-                for nt in cycle:
-                    if nt in used:
-                        continue
-                    if nt in neighbors:
-                        order.append(nt)
-                        used.add(nt)
-                        found = True
-                        break
-    
-                if not found:
-                    break
-    
+            
             if len(order) != 4:
                 order = [nt1, nt2, nt3, nt4]
 
