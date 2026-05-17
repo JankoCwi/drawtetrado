@@ -238,8 +238,21 @@ class Quadruplex:
             if len(order) != 4:
                 order = [nt1, nt2, nt3, nt4]
 
-            elif order[1] == nt4:
+            lw_pair = None
+
+            for p in pairs:
+                a = p["nt1"]
+                b = p["nt2"]
+
+                if (a == order[0] and b == order[1]) or \
+                   (a == order[1] and b == order[2]):
+
+                       lw_pair = p.get("lw", "")
+                       break
+            if lw_pair == "cHW":
                 order = [order[0], order[3], order[2], order[1]]
+                
+                
     
             print("AFTER:", order)
 
