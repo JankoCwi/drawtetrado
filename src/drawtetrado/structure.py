@@ -241,12 +241,9 @@ class Quadruplex:
             lw_pair = None
 
             for p in pairs:
-                a = p["nt1"]
-                b = p["nt2"]
-
-                if (a == order[0] and b == order[1]) or \
-                   (a == order[1] and b == order[2]):
-
+               
+                if (p["nt1"] == nt1 and p["nt2"] = nt2) or \
+                   (p["nt1"] == nt2 and p["nt2"] = nt2):
                        lw_pair = p.get("lw", "")
                        break
             if lw_pair == "cHW":
