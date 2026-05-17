@@ -247,6 +247,9 @@ class Quadruplex:
     
             if len(order) != 4:
                 order = [nt1, nt2, nt3, nt4]
+
+            elif order[1] == nt4:
+                order = [order[0], order[3], order[2], order[1]]
     
             print("AFTER:", order)
 
