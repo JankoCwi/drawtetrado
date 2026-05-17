@@ -252,11 +252,13 @@ class Quadruplex:
               '''
            
             for p in pairs:
-                if p["nt1"] == nt1 and p["nt2"] == nt2:
+                a,b = p["nt1"], p["nt2"]
+
+                if {a,b} == {nt1, nt2}:
                     if p.get("lw") == "cHW":
                         order = [order[0], order[3], order[2], order[1]]
                     break
-            
+               
             
     
             print("AFTER:", order)
