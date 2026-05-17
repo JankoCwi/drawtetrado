@@ -238,18 +238,26 @@ class Quadruplex:
             if len(order) != 4:
                 order = [nt1, nt2, nt3, nt4]
 
-            lw_pair = None
-
+            
+            '''    Sprawdzanie obu relacji nt1-nt2 oraz nt2-nt1
+         
             for p in pairs:
-               
+            
                 if (p["nt1"] == nt1 and p["nt2"] == nt2) or \
                    (p["nt1"] == nt2 and p["nt2"] == nt2):
                        lw_pair = p.get("lw", "")
                        break
-            if lw_pair == "cHW":
-                order = [order[0], order[3], order[2], order[1]]
-                
-                
+                 if lw_pair == "cHW":
+                    order = [order[0], order[3], order[2], order[1]]
+              '''
+           
+            for p in pairs:
+                if p["nt1"] == nt1 and p["nt2"] == nt2:
+                    if p.get("lw") == "cHW":
+                        order = [order[0], order[3], order[2], order[1]]
+                    break
+            
+            
     
             print("AFTER:", order)
 
