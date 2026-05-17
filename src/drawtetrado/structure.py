@@ -184,14 +184,17 @@ class Quadruplex:
         for p in pairs:
             if not p.get("inTetrad", False):
                 continue
+                
             lw = p.get("lw", "")
-            if lw not in ("cWH", "cHW"):
-                continue
     
             a = p["nt1"]
             b = p["nt2"]
-            link_map.setdefault(a, set()).add(b)
-            link_map.setdefault(b, set()).add(a)
+
+            if lw == "cWh":
+                link_map.setdefault(a, []).append(b)
+            
+            elif lw == "cHW":
+                link_map.setdefault(b, []).append(a)
     
         tetr_no = 0
     
