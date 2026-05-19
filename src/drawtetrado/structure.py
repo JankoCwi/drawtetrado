@@ -224,7 +224,7 @@ class Quadruplex:
                 last = order[-1]
                 found = False
     
-                neighbors = link_map.get(last, ())
+                neighbors = sorted(link_map.get(last, ()))
     
  
                 for nt in neighbors:
@@ -238,6 +238,8 @@ class Quadruplex:
             if len(order) != 4:
                 order = [nt1, nt2, nt3, nt4]
 
+            first = order[0]
+            second = order[1]
             
             '''    Sprawdzanie obu relacji nt1-nt2 oraz nt2-nt1
          
@@ -252,9 +254,7 @@ class Quadruplex:
               '''
            
             for p in pairs:
-                a,b = p["nt1"], p["nt2"]
-
-                if {a,b} == {nt1, nt2}:
+                if p["nt1"] == first and p["nt2"] == second:
                     if p.get("lw") == "cHW":
                         order = [order[0], order[3], order[2], order[1]]
                     break
