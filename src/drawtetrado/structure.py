@@ -255,7 +255,7 @@ class Quadruplex:
            
             for p in pairs:
                 if p["nt1"] == first and p["nt2"] == second:
-                    if p.get("lw") == "cHW":
+                    if p.get("lw") == "cWH":
                         order = [order[0], order[3], order[2], order[1]]
                     break
                
