@@ -157,7 +157,6 @@ class Nucleotide:
 
 
 class Quadruplex:
-    
     def UsedNucleotides(self, tetrad, nucl):
         used = {}
         for name, data in tetrad.items():
@@ -169,109 +168,35 @@ class Quadruplex:
 
     def PrepareNucleotides(self, structure, quadruplex_id, tetrad_id):
         nucl = structure.nucleotides
-    
         if tetrad_id >= 0:
             tetrads = structure.single_tetrads[quadruplex_id][tetrad_id]
         else:
             tetrads = structure.tetrads[quadruplex_id]
-    
         tetrads_order = structure.tetrads_order[quadruplex_id]
+
         used_nucl = self.UsedNucleotides(tetrads, nucl)
-        pairs = structure.basePairs
 
-        
-        link_map = {}
-        for p in pairs:
-            if not p.get("inTetrad", False):
-                continue
-                
-            lw = p.get("lw", "")
-
-            if lw not in ("cWH", "cHW"):
-                continue
-                
-    
-            a = p["nt1"]
-            b = p["nt2"]
-
-            link_map.setdefault(a, set()).add(b)
-            link_map.setdefault(b, set()).add(a)
-    
-        
         tetr_no = 0
-    
         for tetrad_name in tetrads_order:
-            if tetrad_name not in tetrads:
+            if tetrad_name in tetrads:
+                tetrad = tetrads[tetrad_name]
+            else:
                 continue
-    
-            tetrad = tetrads[tetrad_name]
-    
             nt1 = tetrad["nt1"]
             nt2 = tetrad["nt2"]
             nt3 = tetrad["nt3"]
             nt4 = tetrad["nt4"]
             onz = tetrad["onz"]
-    
-            print("BEFORE:", nt1, nt2, nt3, nt4)
-    
-            cycle = [nt1, nt2, nt3, nt4]
-    
 
-            order = [nt1]
-            used = {nt1}
-    
-            while len(order) < 4:
-                last = order[-1]
-                found = False
-    
-                neighbors = sorted(link_map.get(last, ()))
-    
- 
-                for nt in neighbors:
-                    if nt in cycle and nt not in used:
-                        order.append(nt)
-                        used.add(nt)
-                        found = True
-                        break
-
-            
-            if len(order) != 4:
-                order = [nt1, nt2, nt3, nt4]
-
-            first = order[0]
-            second = order[1]
-            
-            '''    Sprawdzanie obu relacji nt1-nt2 oraz nt2-nt1
-         
-            for p in pairs:
-            
-                if (p["nt1"] == nt1 and p["nt2"] == nt2) or \
-                   (p["nt1"] == nt2 and p["nt2"] == nt2):
-                       lw_pair = p.get("lw", "")
-                       break
-                 if lw_pair == "cHW":
-                    order = [order[0], order[3], order[2], order[1]]
-              '''
-           
-            for p in pairs:
-                if p["nt1"] == first and p["nt2"] == second:
-                    if p.get("lw") == "cWH":
-                        order = [order[0], order[3], order[2], order[1]]
-                    break
-               
-            
-    
-            print("AFTER:", order)
-
-            nt1, nt2, nt3, nt4 = order
-    
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
             self.nucl_quad[nt3] = Nucleotide(nucl[nt3], used_nucl, tetr_no, onz, 2)
             self.nucl_quad[nt4] = Nucleotide(nucl[nt4], used_nucl, tetr_no, onz, 3)
-    
-            self.tetrads.append(order)
-            tetr_no += 1
+
+            self.tetrads.append([nt1, nt2, nt3, nt4])
+
+            tetr_no = tetr_no + 1
+
 
     def GetChainFirstLast(self):
         chains = {}
@@ -619,8 +544,6 @@ class Structure:
     def fromJsonDict(self, json_dict):
         for data in json_dict["nucleotides"]:
             self.addNucleotide(data["fullName"], data)
-            
-        self.basePairs = json_dict.get("basePairs", [])
 
 
         # TODO What to do with other helices/quadruplexes?
@@ -670,9 +593,6 @@ class Structure:
 
             tetrad_ordered.reverse()
 
-            
-            
-            
             # Do not add single tetrads as quadruplexes.
             if len(tetrad_ordered) > 1:
                 self.tetrads_order.append(tetrad_ordered)
@@ -680,10 +600,7 @@ class Structure:
 
             self.tracts.append(tracts_all)
             self.single_tetrads.append(single_tetrads_local)
-        
-        
-        
-        
+
         # TODO check if input data was valid.
         # Are there any nucleotides and tetrads?
         return self
