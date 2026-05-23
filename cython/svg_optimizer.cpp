@@ -114,13 +114,41 @@ bool SameLayout(const std::vector<Position> &previous,
   return true;
 }
 
+//Funkcja walidująca czy dane rozwiązanie jest legalne
+///////////////////////////////////
+bool IsValid(const std::vector<Position>& perm) {
+
+for (int shift = 0; shift < 4 ++shift) {
+bool ok = true;
+  for (int i = 0; i < 4; ++i) {
+    if (perm[i] != (i+shift) % 4) {
+      ok = false;
+      break;
+    }
+  }
+  if (ok) return true;
+}
+  return false;
+}
+/////////////////////////////////
+
+
+
+
+
 Solution Solve(const std::vector<ID> &edges,
                const std::vector<Level> &rotations,
                const std::vector<ID> &alignments) {
   const int num_levels = edges.size() / 4;
   std::vector<Solution> current, next;
 
+ 
   for (const auto &perm : permutations) {
+ ////////////////////////////////////////
+    if (!IsValid(perm)) {
+      continue;
+    }
+   //////////////////////////////////////// 
     current.push_back({.positions = perm, .score = 0});
     UpdateScoreForLevel(edges, 0 /* level 0 */, &current.back());
   }
