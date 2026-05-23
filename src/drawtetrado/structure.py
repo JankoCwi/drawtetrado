@@ -270,8 +270,8 @@ class Quadruplex:
 
     # Use C++ code to rotate tetrads for more readable output.
     def Optimize(self, optimizer = "./svg_optimizer"):
-        import svg_optimizer as optimizer
-        optimized = optimizer.solve(self.GetNucleotidesPositions(),
+        import svg_optimizer as optimizer_mod
+        optimized = optimizer_mod.solve(self.GetNucleotidesPositions(),
                                     self.GetSameRotations(),
                                     self.GetAlignments())
 
