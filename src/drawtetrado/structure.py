@@ -277,9 +277,9 @@ class Quadruplex:
 
         # Update position for nucleotide.
         for _, nucl in self.nucl_quad.items():
-            base = nucl.tetrade_no * 4
+            pos = nucl.position + nucl.tetrade_no * 4
             for x in range(4):
-                if optimized[base + x] == nucl.position:
+                if int(optimized[nucl.tetrade_no * 4 + x]) == nucl.position:
                     nucl.position = x
                     break
 
