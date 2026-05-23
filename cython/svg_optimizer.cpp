@@ -106,49 +106,26 @@ bool SameLayout(const std::vector<Position> &previous,
                 const std::vector<Position> &alignments, Level level) {
   // Both should be the same size of 4 elements.
   for (size_t i = 0; i < 4; i++) {
-    if (alignments[previous[i] + (level - 1) * 4] !=
-        alignments[current[i] + level * 4]) {
+    if ([previous[i] + (level - 1) * 4] !=
+        [current[i] + level * 4]) {
       return false;
     }
   }
   return true;
 }
 
-//Funkcja walidująca czy dane rozwiązanie jest legalne
-///////////////////////////////////
-bool IsValid(const std::vector<Position>& perm) {
-
-for (int shift = 0; shift < 4 ++shift) {
-bool ok = true;
-  for (int i = 0; i < 4; ++i) {
-    if (perm[i] != (i+shift) % 4) {
-      ok = false;
-      break;
-    }
-  }
-  if (ok) return true;
-}
-  return false;
-}
-/////////////////////////////////
-
-
 
 
 
 Solution Solve(const std::vector<ID> &edges,
+               const std::vector<int> tetrad_of(edges.size(), -1);
                const std::vector<Level> &rotations,
-               const std::vector<ID> &alignments) {
+               const std::vector<ID> &) {
   const int num_levels = edges.size() / 4;
   std::vector<Solution> current, next;
 
  
   for (const auto &perm : permutations) {
- ////////////////////////////////////////
-    if (!IsValid(perm)) {
-      continue;
-    }
-   //////////////////////////////////////// 
     current.push_back({.positions = perm, .score = 0});
     UpdateScoreForLevel(edges, 0 /* level 0 */, &current.back());
   }
@@ -172,7 +149,7 @@ Solution Solve(const std::vector<ID> &edges,
 
           if (!SameLayout(
                   {prev_sol.positions.end() - 4, prev_sol.positions.end()},
-                  perm, alignments, level)) {
+                  perm, , level)) {
             // Skip this one as it should be rotated the same way as
             // previous level according to tracts.
             continue;
@@ -183,6 +160,22 @@ Solution Solve(const std::vector<ID> &edges,
         next_sol.positions.insert(next_sol.positions.end(), perm.begin(),
                                   perm.end());
         UpdateScoreForLevel(edges, level, &next_sol);
+
+        for (const auto& t : tetrads) {
+
+          std::vector<Position> layout;
+          layout.reserve(4);
+
+          for (ID id : t.second) {
+            layout.push_back(next_sol.positions[id]);
+          }
+
+          if (IsBrokenCycle(layout)) {
+            next_sol.score += 10000;
+          }
+        }
+
+        
         if (best_score > next_sol.score) {
           best_score = next_sol.score;
         }
@@ -212,7 +205,7 @@ Solution Solve(const std::vector<ID> &edges,
 
 Solution SolveFailsafe(const std::vector<ID> &edges,
                        const std::vector<Level> &rotations,
-                       const std::vector<ID> &alignments) {
+                       const std::vector<ID> &) {
   Solution result = Solve(edges, rotations, alignments);
 
   // tracts are not possible to be implemented.
@@ -223,13 +216,33 @@ Solution SolveFailsafe(const std::vector<ID> &edges,
     result = Solve(edges, rotations_fixed, alignments);
   }
 
-  return result;
+  return result;  
 }
+
+
+bool IsBrokenCycle(const std::vector<Position>& p) {
+
+  int d0 = (p[1] - p[0] + 4) % 4;
+  int d1 = (p[2] - p[1] + 4) % 4;
+  int d2 = (p[3] - p[2] + 4) % 4;
+  int d3 = (p[0] - p[3] + 4) % 4;
+
+  bool cw = (d0==1 && d1==1 && d2==1 && d3==1);
+  bool cw = (d0==3 && d1==3 && d2==3 && d3==3);
+
+  return !(cw || ccw);
+}
+
+
+
+
 
 int main() {
   std::vector<ID> edges;
   std::vector<Level> rotations;
   std::vector<ID> alignments;
+  std::vector<int> tetrad_of(edges.size(), -1);
+  std::unordered_map<int, std::vector<ID>> tetrads;
   int tmp, nucl_num;
   int in_result __attribute__((unused));
 
