@@ -290,6 +290,7 @@ class Quadruplex:
             for x in range(4):
                 if int(optimized[nucl.tetrade_no * 4 + x]) == nucl.position:
                     nucl.position = x
+                    print("Po optymalizacji:", nucl.full_name, nucl.position)
                     break
 
         # Update positions in tetrades. For Tetrade border
