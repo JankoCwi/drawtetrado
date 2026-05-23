@@ -200,7 +200,7 @@ class Quadruplex:
             tetr_no = tetr_no + 1
             
             
-            print("Wybór tetrad", tetrad_name, nt1, nt2, nt3, nt4, "onz=", onz)
+            print("Wybór tetrad", tetrad_name, "onz=", onz)
             print("Pozycja ", nt1, 0)
             print("Pozycja ", nt2, 1)
             print("Pozycja ", nt3, 2)
