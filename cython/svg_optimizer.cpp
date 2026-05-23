@@ -142,6 +142,8 @@ Solution Solve(const std::vector<ID> &edges,
         if (rotations[level] != -1 &&
             rotations[level] == rotations[level - 1]) {
 
+            std::vector<Position> prev(prev_sol.positions.end() - 4,
+                                       prev_sol.positions.end());
           if (!SameLayout(
                   {prev_sol.positions.end() - 4, prev_sol.positions.end()},
                   perm, alignments, level)) {
