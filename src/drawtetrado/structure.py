@@ -188,6 +188,8 @@ class Quadruplex:
             nt4 = tetrad["nt4"]
             onz = tetrad["onz"]
 
+
+
             self.nucl_quad[nt1] = Nucleotide(nucl[nt1], used_nucl, tetr_no, onz, 0)
             self.nucl_quad[nt2] = Nucleotide(nucl[nt2], used_nucl, tetr_no, onz, 1)
             self.nucl_quad[nt3] = Nucleotide(nucl[nt3], used_nucl, tetr_no, onz, 2)
@@ -196,7 +198,14 @@ class Quadruplex:
             self.tetrads.append([nt1, nt2, nt3, nt4])
 
             tetr_no = tetr_no + 1
-
+            
+            
+            print("Wybór tetrad", tetrad_name, nt1, nt2, nt3, nt4, "onz=", onz)
+            print("Pozycja ", nt1, 0)
+            print("Pozycja ", nt2, 1)
+            print("Pozycja ", nt3, 2)
+            print("Pozycja ", nt4, 3)
+    
 
     def GetChainFirstLast(self):
         chains = {}
@@ -549,6 +558,7 @@ class Structure:
         # TODO What to do with other helices/quadruplexes?
         for index, helice in enumerate(json_dict["helices"]): #["quadruplexes"][0]["tetrads"].items():
             # Unordered tetrads. Order them from "tetrad_pairs"
+            
             single_tetrads_local = []
             tetrad_unordered = {}
             tracts_all = []
