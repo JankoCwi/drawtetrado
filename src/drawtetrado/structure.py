@@ -302,6 +302,9 @@ class Quadruplex:
             new_positions.append(tetrad[int(optimized[level * 4 + 2])])
             new_positions.append(tetrad[int(optimized[level * 4 + 3])])
 
+            print("Przed aktualizacją tetrady:", tetrad)
+            print("Po aktualizacji tetrady:", new_positions)
+
             #print("{0} -> {1}".format(tetrad, new_positions))
             for i, val in enumerate(new_positions):
                 tetrad[i] = new_positions[i]
