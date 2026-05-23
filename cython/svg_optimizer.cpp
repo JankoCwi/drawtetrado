@@ -14,8 +14,8 @@ using ID = int32_t;
 using Position = int32_t;
 
 const std::vector<std::vector<Position>> permutations = {
-    {0, 1, 2, 3}, {3, 0, 1, 2}, {2, 3, 0, 1}, {1, 2, 3, 0},
-    {2, 1, 0, 3}, {3, 2, 1, 0}, {0, 3, 2, 1}, {1, 0, 3, 2}
+     {1, 2, 3, 0}}
+    
 };#include <algorithm>
 #include <cmath>
 #include <cstdlib>
