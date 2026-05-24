@@ -131,6 +131,8 @@ def main():
         help = "Force 5' end on the bottom left of a visualization"
 
     args = parser.parse_args()
+    if args.5prime:
+        os.environ["draw_5prime"] = "1"
 
     config = svg_painter.Config(1.0, args.config)
 
