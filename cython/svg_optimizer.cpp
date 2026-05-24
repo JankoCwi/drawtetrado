@@ -14,9 +14,21 @@ using ID = int32_t;    // Level * 4 + Index;
 // Visual
 using Position = int32_t; // 0/1/2/3
 
-const std::vector<std::vector<Position>> permutations = {
-    {0, 1, 2, 3}, {3, 0, 1, 2}, {2, 3, 0, 1}, {1, 2, 3, 0},
-    {2, 1, 0, 3}, {3, 2, 1, 0}, {0, 3, 2, 1}, {1, 0, 3, 2}};
+
+
+
+std::vector<std::vector<Position>> GetPermutations() {
+    if (std::getenv("draw_5prime")) {
+        return {{1,2,3,0}};
+    }
+    return {
+        {0, 1, 2, 3}, {3, 0, 1, 2}, {2, 3, 0, 1}, {1, 2, 3, 0},
+        {2, 1, 0, 3}, {3, 2, 1, 0}, {0, 3, 2, 1}, {1, 0, 3, 2}
+        };
+}
+
+const std::vector<std::vector<Position>> permutations = GetPermutations();
+
 
 struct Solution {
   std::vector<Position> positions;
