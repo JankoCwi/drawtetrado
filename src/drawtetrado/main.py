@@ -16,7 +16,7 @@ import drawtetrado.structure as structure
 import drawtetrado.svg_painter as svg_painter
 
 
-def Draw(struct, output_file, config = svg_painter.Config(1.0)):
+def Draw(struct, output_file, config = svg_painter.Config(1.0), use_5prime=False):
     if len(struct.tetrads) == 0:
         print("No tetrads available in the processed structure!")
     for idx in range(len(struct.tetrads)):
@@ -26,7 +26,7 @@ def Draw(struct, output_file, config = svg_painter.Config(1.0)):
 
         # OPTIMIZE, Takes argument "optimizer" with location to the optimizer
         # binary. Default is "./svg_optimizer"
-        quadruplex.Optimize(use_5prime = use_5prime)
+        quadruplex.Optimize(use_5prime=use_5prime)
 
         # Prepare + Draw
         svg_maker.DrawAll()
