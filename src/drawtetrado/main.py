@@ -129,6 +129,7 @@ def main():
         "--5prime",
         action = "store_true",
         help = "Force the 5' end on the bottom left of the visualization"
+    )
 
     
     args = parser.parse_args()
