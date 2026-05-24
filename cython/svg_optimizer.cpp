@@ -141,7 +141,7 @@ bool SameLayout(const std::vector<Position> &previous,
 Solution Solve(const std::vector<ID> &edges,
                const std::vector<Level> &rotations,
                const std::vector<ID> &alignments,
-               const std::vector<std::vector<Position>> &permutations) {
+               bool use_5prime) {
   const int num_levels = edges.size() / 4;
   std::vector<Solution> current, next;
 
@@ -210,15 +210,15 @@ Solution Solve(const std::vector<ID> &edges,
 Solution SolveFailsafe(const std::vector<ID> &edges,
                        const std::vector<Level> &rotations,
                        const std::vector<ID> &alignments\
-                       const std::vector<std::vector<Position>> &permutations) {
-  Solution result = Solve(edges, rotations, alignments, permutations);
+                       bool use_5prime) {
+  Solution result = Solve(edges, rotations, alignments, use_5prime);
 
   // tracts are not possible to be implemented.
   // Recalculate ignoring tracts.
   if (result.score == -1) {
     fprintf(stderr, "Unable to include tracts, ignoring.\n");
     std::vector<Level> rotations_fixed(edges.size(), -1);
-    result = Solve(edges, rotations_fixed, alignments, permutations);
+    result = Solve(edges, rotations_fixed, alignments, use_5prime);
   }
 
   return result;
@@ -247,7 +247,7 @@ int main() {
     alignments.push_back(static_cast<ID>(tmp));
   }
 
-  Solution result = Solve(edges, rotations, alignments, permutations);
+  Solution result = Solve(edges, rotations, alignments, use_5prime);
 
   // tracts are not possible to be implemented.
   // Recalculate ignoring tracts.
@@ -256,7 +256,7 @@ int main() {
     for (auto &rotation : rotations) {
       rotation = -1;
     }
-    result = Solve(edges, rotations, alignments, permutations);
+    result = Solve(edges, rotations, alignments, use_5prime);
   }
   printf("%hd", result.positions[0]);
   for (size_t i = 1; i < result.positions.size(); ++i) {
@@ -363,7 +363,7 @@ bool SameLayout(const std::vector<Position> &previous,
 Solution Solve(const std::vector<ID> &edges,
                const std::vector<Level> &rotations,
                const std::vector<ID> &alignments
-               const std::vector<std::vector<Position>> &permutations) {
+               bool use_5prime) {
 
     const int num_levels = edges.size() / 4;
     std::vector<Solution> current, next;
@@ -432,13 +432,13 @@ Solution Solve(const std::vector<ID> &edges,
 Solution SolveFailsafe(const std::vector<ID> &edges,
                        const std::vector<Level> &rotations,
                        const std::vector<ID> &alignments
-                       const std::vector<std::vector<Position>> &permutations) {
+                       bool use_5prime) {
 
-    Solution result = Solve(edges, rotations, alignments, permutations);
+    Solution result = Solve(edges, rotations, alignments, use_5prime);
 
     if (result.score == -1) {
         std::vector<Level> rot_fixed(edges.size(), -1);
-        result = Solve(edges, rot_fixed, alignments, permutations);
+        result = Solve(edges, rot_fixed, alignments, use_5prime);
     }
 
     return result;
@@ -484,11 +484,11 @@ int main(int argc, char** argv) {
         alignments.push_back(tmp);
     }
 
-    Solution result = Solve(edges, rotations, alignments, permutations);
+    Solution result = Solve(edges, rotations, alignments, use_5prime);
 
     if (result.score == -1) {
         for (auto &r : rotations) r = -1;
-        result = Solve(edges, rotations, alignments, permutations);
+        result = Solve(edges, rotations, alignments, use_5prime);
     }
 
     printf("%d", result.positions[0]);
