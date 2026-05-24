@@ -125,6 +125,10 @@ def main():
         help="(optional, ElTetrado) name of the external tool that produced the files (auto-detected when not provided)",
     )
 
+    parser.add_argument(
+        "--5prime",
+        action = "store_true",
+        help = "Force 5' end on the bottom left of a visualization"
 
     args = parser.parse_args()
 
