@@ -124,6 +124,13 @@ def main():
         choices=[t.value for t in ExternalTool],
         help="(optional, ElTetrado) name of the external tool that produced the files (auto-detected when not provided)",
     )
+
+    parser.add_argument(
+        "--5prime",
+        action = "store_true",
+        help = "Force the 5' end on the bottom left of the visualization"
+
+    
     args = parser.parse_args()
 
     config = svg_painter.Config(1.0, args.config)
