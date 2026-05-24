@@ -129,6 +129,8 @@ def main():
         "--five_prime",
         action = "store_true",
         help = "Force 5' end on the bottom left of a visualization"
+    )
+    
 
     args = parser.parse_args()
     if args.five_prime:
