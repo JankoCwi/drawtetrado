@@ -344,11 +344,12 @@ class Quadruplex:
         return lst
 
     # Use C++ code to rotate tetrads for more readable output.
-    def Optimize(self, optimizer = "./svg_optimizer"):
+    def Optimize(self, optimizer = "./svg_optimizer", use_5prime = False):
         import optimizer
         optimized = optimizer.solve(self.GetNucleotidesPositions(),
                                     self.GetSameRotations(),
-                                    self.GetAlignments())
+                                    self.GetAlignments(),
+                                    use_5prime)
 
         # Update position for nucleotide.
         for _, nucl in self.nucl_quad.items():
