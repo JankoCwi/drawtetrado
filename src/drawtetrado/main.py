@@ -26,7 +26,7 @@ def Draw(struct, output_file, config = svg_painter.Config(1.0)):
 
         # OPTIMIZE, Takes argument "optimizer" with location to the optimizer
         # binary. Default is "./svg_optimizer"
-        quadruplex.Optimize(use_5prime=args.__dict__["5prime"])
+        quadruplex.Optimize(use_5prime = use_5prime)
 
         # Prepare + Draw
         svg_maker.DrawAll()
@@ -133,6 +133,7 @@ def main():
 
     
     args = parser.parse_args()
+    use_5prime = args.__dict__["5prime"]
 
     config = svg_painter.Config(1.0, args.config)
 
