@@ -195,7 +195,7 @@ class Quadruplex:
 
         curr_pos = five_prime.position
         shift = (3 - curr_pos) % 4
-        self.Rotate(five_prime.tetrade_no, shift)
+        self.Rotate(shift)
 
 
         
