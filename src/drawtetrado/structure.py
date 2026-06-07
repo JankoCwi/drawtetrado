@@ -2,7 +2,6 @@ import json
 import sys
 import math
 import subprocess
-import os
 
 from drawtetrado.svg_painter import Point, ConnType, ConnFlow
 
@@ -159,46 +158,6 @@ class Nucleotide:
 
 class Quadruplex:
 
-    def Rotate(self, shift):
-        shift %= 4
-
-        if shift == 0:
-            return
-
-        for nucl in self.nucl_quad.values():
-            nucl.position = (nucl.position + shift) % 4
-
-
-    
-
-    def ForceFivePrime(self):
-        first_chain = next(iter(self.chains.values()))
-        five_name = first_chain["first"]
-        five_prime = self.nucl_quad[five_name]
-
-        max_level = len(self.tetrads) - 1
-
-        # 5' na górze
-        if five_prime.tetrade_no == max_level:
-            for nucl in self.nucl_quad.values():
-                nucl.tetrade_no = max_level - nucl.tetrade_no
-            self.tetrads.reverse()
-            self.tracts.reverse()
-
-            five_prime = self.nucl_quad[five_name]
-
-
-        # 5' w środku
-        if 0 < five_prime.tetrade_no < max_level:
-            return
-
-
-        curr_pos = five_prime.position
-        shift = (3 - curr_pos) % 4
-        self.Rotate(shift)
-
-
-        
     
     def UsedNucleotides(self, tetrad, nucl):
         used = {}
@@ -400,27 +359,6 @@ class Quadruplex:
                     nucl.position = x
                     break
 
-        if os.getenv("draw_5prime"):
-            self.ForceFivePrime()
-
-            for nucl in self.nucl_quad.values():
-                nucl.connection_type = ConnType.UNKNOWN
-                nucl.flow_in = ConnFlow.UNKNOWN
-                nucl.flow_out = ConnFlow.UNKNOWN
-                nucl.connected_from = ""
-                nucl.connected_to = ""
-
-            
-                nucl.priority_conn = -1
-                nucl.priority_edge = -1
-                nucl.priority_nucl = -1
-                    
-            self.chains = self.GetChainFirstLast()
-
-            self.DetermineConnectionTypes()
-            self.CalculateFlow(self.chains[next(iter(self.chains))])
-
-        
 
         # Update positions in tetrades. For Tetrade border
         level = 0
