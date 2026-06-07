@@ -399,6 +399,9 @@ class Quadruplex:
                 if int(optimized[nucl.tetrade_no * 4 + x]) == nucl.position:
                     nucl.position = x
                     break
+        if os.getenv("draw_5prime"):
+            self.ForceFivePrime()
+        
 
         # Update positions in tetrades. For Tetrade border
         level = 0
@@ -415,8 +418,7 @@ class Quadruplex:
 
             level = level + 1
 
-        if os.getenv("draw_5prime"):
-            self.ForceFivePrime()
+
         
     
 
