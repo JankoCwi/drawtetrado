@@ -408,6 +408,7 @@ class Quadruplex:
                 nucl.flow_in = ConnFlow.UNKNOWN
                 nucl.flow_out = ConnFlow.UNKNOWN
                 nucl.connected_from = ""
+                nucl.connected_to = ""
                     
             self.chains = self.GetChainFirstLast()
             self.DetermineConnectionTypes()
