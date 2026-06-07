@@ -181,6 +181,11 @@ class Quadruplex:
             return
 
 
+        curr_pos = five_prime.position
+        shift = (3 - cur_pos) % 4
+        self.RotateLevel(five_prime.tetrade_no, shift)
+
+
         
     
     def UsedNucleotides(self, tetrad, nucl):
