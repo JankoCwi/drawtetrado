@@ -387,12 +387,6 @@ class Quadruplex:
 
     # Use C++ code to rotate tetrads for more readable output.
     def Optimize(self, optimizer = "./svg_optimizer"):
-
-        if os.getenv("draw_5prime"):
-            self.ForceFivePrime()
-
-
-        
         import optimizer
         optimized = optimizer.solve(self.GetNucleotidesPositions(),
                                     self.GetSameRotations(),
@@ -405,7 +399,14 @@ class Quadruplex:
                 if int(optimized[nucl.tetrade_no * 4 + x]) == nucl.position:
                     nucl.position = x
                     break
- 
+
+        if os.getenv("draw_5prime"):
+            self.ForceFivePrime()
+            self.chains = self.GetChainFirstLast()
+            self.DetermineConnectionTypes()
+            first_chain = next(iter(self.chains.values()))
+            self.CalculateFlow(first_chain)
+
         
 
         # Update positions in tetrades. For Tetrade border
