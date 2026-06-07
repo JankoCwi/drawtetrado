@@ -409,14 +409,14 @@ class Quadruplex:
                 nucl.flow_out = ConnFlow.UNKNOWN
                 nucl.connected_from = ""
                 nucl.connected_to = ""
+
+            
+                nucl.priority_conn = -1
+                nucl.priority_edge = -1
+                nucl.priority_nucl = -1
                     
             self.chains = self.GetChainFirstLast()
 
-            for name, nucl in self.nucl_quad.items():
-                nucl.connected_to = nucl.FindConnections(self.nucl_quad)
-                nucl.connected_from = ""
-
-            self.chains = self.GetChainFirstLast()
             self.DetermineConnectionTypes()
             first_chain = next(iter(self.chains.values()))
             self.CalculateFlow(first_chain)
