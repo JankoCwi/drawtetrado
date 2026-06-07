@@ -159,6 +159,18 @@ class Nucleotide:
 
 class Quadruplex:
 
+    def Rotate(self, shift):
+        shift %= 4
+
+        if shift == 0:
+            return
+
+        for nucl in self.nucl_quad.values():
+            nucl.position = (nucl.position + shift) % 4
+
+
+    
+
     def ForceFivePrime(self):
         first_chain = next(iter(self.chains.values()))
         five_name = first_chain["first"]
@@ -183,7 +195,7 @@ class Quadruplex:
 
         curr_pos = five_prime.position
         shift = (3 - curr_pos) % 4
-        self.RotateLevel(five_prime.tetrade_no, shift)
+        self.Rotate(five_prime.tetrade_no, shift)
 
 
         
