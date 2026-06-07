@@ -394,6 +394,7 @@ class Quadruplex:
                     if nucl.full_name == self.five_prime:
                         if nucl.position in (0,1):
                             nucl.position = 3
+                            print("5' działam sobie")
 
                 
                 if conn.position == nucl.position and abs(level_difference) == 1:
