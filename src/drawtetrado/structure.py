@@ -402,10 +402,9 @@ class Quadruplex:
 
         if os.getenv("draw_5prime"):
             self.ForceFivePrime()
-            self.chains = self.GetChainFirstLast()
+            self.GetChainFirstLast()
             self.DetermineConnectionTypes()
-            first_chain = next(iter(self.chains.values()))
-            self.CalculateFlow(first_chain)
+            self.CalculateFlow()
 
         
 
