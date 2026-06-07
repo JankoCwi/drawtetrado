@@ -126,9 +126,32 @@ bool SameLayout(const std::vector<Position> &previous,
   return true;
 }
 
+static inline bool FivePrime(const std::vector<Position> &perm,
+                             ID five_prime
+                             Level level,
+                             Level num_levels) {
+    if (five_prime == -1) return true;
+
+    const Index idx = five_prime % 4;
+    const Position pos = perm[idx];
+
+    const bool bottom = (level == num_levels - 1);
+    const bool middle = (!bottom && level > 0);
+
+    if (bottom) {
+        return pos == 3;
+    }
+
+    if (middle) {
+        return (pos == 2 || pos == 3);
+    }
+    return true;
+}
+
 Solution Solve(const std::vector<ID> &edges,
                const std::vector<Level> &rotations,
-               const std::vector<ID> &alignments) {
+               const std::vector<ID> &alignments,
+               ID five_prime = -1) {
   const int num_levels = edges.size() / 4;
   std::vector<Solution> current, next;
 
@@ -233,7 +256,13 @@ int main() {
     alignments.push_back(static_cast<ID>(tmp));
   }
 
-  Solution result = Solve(edges, rotations, alignments);
+
+    ID five_prime = -1;
+    if (std::getenv("draw_5prime")) {
+        five_prime = 0;
+    }
+    
+  Solution result = Solve(edges, rotations, alignments, five_prime);
 
   // tracts are not possible to be implemented.
   // Recalculate ignoring tracts.
