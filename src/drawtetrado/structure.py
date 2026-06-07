@@ -2,6 +2,7 @@ import json
 import sys
 import math
 import subprocess
+import os
 
 from drawtetrado.svg_painter import Point, ConnType, ConnFlow
 
@@ -157,6 +158,30 @@ class Nucleotide:
 
 
 class Quadruplex:
+
+    def ForceFivePrime(self):
+        first_chain = next(iter(self.chains.values()))
+        five_name = first_chain["first"]
+        five_prime = self.nucl_quad[five_name]
+
+        max_level = len(self.tetrads) - 1
+
+        # 5' na górze
+        if five_prime.tetrade_no == max_level:
+            for nucl in self.nucl_quad.values():
+                nucl.tetrade_no = max_level - nucl.tetrade_no
+            self.tetrads.reverse()
+            self.tracts.reverse()
+
+            five_prime = self.nucl_quad[five_name]
+
+
+        # 5' w środku
+        if 0 < five_prime.tetrade_no < max_level:
+            return
+
+
+        
     
     def UsedNucleotides(self, tetrad, nucl):
         used = {}
@@ -372,6 +397,11 @@ class Quadruplex:
                 tetrad[i] = new_positions[i]
 
             level = level + 1
+
+        if os.getenv("draw_5prime"):
+            self.ForceFivePrime()
+        
+    
 
     def DetermineConnectionTypes(self):
         for _, nucl in self.nucl_quad.items():
