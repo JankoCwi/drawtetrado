@@ -389,6 +389,13 @@ class Quadruplex:
                 # < 0 - connection from bottom to top
                 # = 0 - COnnection on the same level
                 level_difference = conn.tetrade_no - nucl.tetrade_no
+
+                if hasattr(self, "five_prime") and self.five_prime:
+                    if nucl.full_name == self.five_prime:
+                        if nucl.position in (0,1):
+                            nucl.position = 3
+
+                
                 if conn.position == nucl.position and abs(level_difference) == 1:
                     nucl.connection_type = ConnType.SIMPLE
                 elif level_difference == 0:
