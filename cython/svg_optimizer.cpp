@@ -18,10 +18,6 @@ using Position = int32_t; // 0/1/2/3
 
 
 std::vector<std::vector<Position>> GetPermutations() {
-    
-    if (std::getenv("draw_5prime")) { return {{0,1,2,3}};
-    
-
     return {
         {0, 1, 2, 3}, {3, 0, 1, 2}, {2, 3, 0, 1}, {1, 2, 3, 0},
         {2, 1, 0, 3}, {3, 2, 1, 0}, {0, 3, 2, 1}, {1, 0, 3, 2}
@@ -141,7 +137,8 @@ static inline bool FivePrime(const std::vector<Position> &perm,
     const bool bottom = (level == num_levels - 1);
     const bool middle = (!is_top && !is_bottom);
 
-    if (top) return pos == 3;
+    if (bottom) return pos ==3
+    if (top) return true;
     if (middle && level == five_level) return (pos == 2 || pos == 3);
 
     return true;
