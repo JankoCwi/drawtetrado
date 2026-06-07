@@ -133,34 +133,34 @@ static inline bool FivePrime(const std::vector<Position> &perm,
     const Position pos = perm[idx];
 
     const bool bottom = (level == num_levels - 1);
-    const bool top = (level == 0)
+    const bool top = (level == 0);
     const bool middle = (!bottom && !top);
     
 
-    if (bottom) {
-        return pos == 3;
-    }
+    if (bottom) return pos == 3;
 
-    if (middle) {
-        return (pos == 3);
-    }
+    if (middle) return pos == 3;
     
-    if (top) {
-        return true;
-    }
+    if (top) return true;
+    
     return true;
+    
 }
 
 Solution Solve(const std::vector<ID> &edges,
                const std::vector<Level> &rotations,
                const std::vector<ID> &alignments,
                ID five_prime = -1) {
+    
   const int num_levels = edges.size() / 4;
   std::vector<Solution> current, next;
 
+  auto ok_perm = [&](const std::vector<Position> &perm, Level level) {
+        return FivePrime(perm, five_prime, level, num_levels);
+  };
     
   for (const auto &perm : permutations) {
-      if (!FivePrime(perm, five_prime, level, num_levels))
+      if (!ok_perm(perm, 0))
           continue;
     current.push_back({.positions = perm, .score = 0});
     UpdateScoreForLevel(edges, 0 /* level 0 */, &current.back());
@@ -179,6 +179,8 @@ Solution Solve(const std::vector<ID> &edges,
     best_score = INF;
     for (const auto &prev_sol : current) {
       for (const auto &perm : permutations) {
+
+        if (!ok_perm(perm, level)) continue;
         // Is this level in the same rotation group as the previous one?
         if (rotations[level] != -1 &&
             rotations[level] == rotations[level - 1]) {
