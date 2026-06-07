@@ -124,7 +124,7 @@ bool SameLayout(const std::vector<Position> &previous,
 }
 
 static inline bool FivePrime(const std::vector<Position> &perm,
-                             ID five_prime
+                             ID five_prime,
                              Level level,
                              Level num_levels) {
     if (five_prime == -1) return true;
@@ -133,14 +133,20 @@ static inline bool FivePrime(const std::vector<Position> &perm,
     const Position pos = perm[idx];
 
     const bool bottom = (level == num_levels - 1);
-    const bool middle = (!bottom && level > 0);
+    const bool top = (level == 0)
+    const bool middle = (!bottom && !top);
+    
 
     if (bottom) {
         return pos == 3;
     }
 
     if (middle) {
-        return (pos == 2 || pos == 3);
+        return (pos == 3);
+    }
+    
+    if (top) {
+        return true;
     }
     return true;
 }
@@ -152,7 +158,10 @@ Solution Solve(const std::vector<ID> &edges,
   const int num_levels = edges.size() / 4;
   std::vector<Solution> current, next;
 
+    
   for (const auto &perm : permutations) {
+      if (!FivePrime(perm, five_prime, level, num_levels))
+          continue;
     current.push_back({.positions = perm, .score = 0});
     UpdateScoreForLevel(edges, 0 /* level 0 */, &current.back());
   }
