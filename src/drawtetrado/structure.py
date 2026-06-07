@@ -410,6 +410,9 @@ class Quadruplex:
                 nucl.connected_from = ""
                     
             self.chains = self.GetChainFirstLast()
+            for i, nucl in self.nucl_quad.items():
+                nucl.connected_from = ""
+                
             self.DetermineConnectionTypes()
             self.CalculateFlow(self.chains)
 
