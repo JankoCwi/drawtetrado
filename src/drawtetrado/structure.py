@@ -418,8 +418,7 @@ class Quadruplex:
             self.chains = self.GetChainFirstLast()
 
             self.DetermineConnectionTypes()
-            first_chain = next(iter(self.chains.values()))
-            self.CalculateFlow(first_chain)
+            self.CalculateFlow(self.chains[next(iter(self.chains))])
 
         
 
