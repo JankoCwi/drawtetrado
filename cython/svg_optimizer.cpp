@@ -18,6 +18,9 @@ using Position = int32_t; // 0/1/2/3
 
 
 std::vector<std::vector<Position>> GetPermutations() {
+    if (std::getenv("draw_5prime")) {
+        return {{0,1,2,3}};
+    }
     return {
         {0, 1, 2, 3}, {3, 0, 1, 2}, {2, 3, 0, 1}, {1, 2, 3, 0},
         {2, 1, 0, 3}, {3, 2, 1, 0}, {0, 3, 2, 1}, {1, 0, 3, 2}
@@ -123,46 +126,13 @@ bool SameLayout(const std::vector<Position> &previous,
   return true;
 }
 
-static inline bool FivePrime(const std::vector<Position> &perm,
-                               ID five_prime,
-                               Level level,
-                               Level num_levels,
-                               Level five_level) {
-    if (five_prime == -1) return true;
-
-    const Index idx = five_prime % 4;
-    const Position pos = perm[idx];
-
-    const bool top = (level == 0);
-    const bool bottom = (level == num_levels - 1);
-    const bool middle = (!is_top && !is_bottom);
-
-    if (bottom) return pos ==3
-    if (top) return true;
-    if (middle && level == five_level) return (pos == 2 || pos == 3);
-
-    return true;
-}
-
-
-
 Solution Solve(const std::vector<ID> &edges,
                const std::vector<Level> &rotations,
-               const std::vector<ID> &alignments,
-               ID five_prime = -1) {
-
-    
+               const std::vector<ID> &alignments) {
   const int num_levels = edges.size() / 4;
   std::vector<Solution> current, next;
-  
-  Level five_level = five_prime == -1 ? -1 : LevelOf(five_prime);
-
 
   for (const auto &perm : permutations) {
-
-    if(!FivePrime(perm, five_prime, 0, num_levels, five_level))
-        continue;
-      
     current.push_back({.positions = perm, .score = 0});
     UpdateScoreForLevel(edges, 0 /* level 0 */, &current.back());
   }
@@ -193,9 +163,6 @@ Solution Solve(const std::vector<ID> &edges,
           }
         }
 
-        if (!FivePrime(perm, five_prime, level, num_levels, five_level))
-            continue;
-          
         auto &next_sol = next.emplace_back(prev_sol);
         next_sol.positions.insert(next_sol.positions.end(), perm.begin(),
                                   perm.end());
