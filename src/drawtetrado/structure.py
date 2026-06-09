@@ -190,7 +190,7 @@ class Quadruplex:
 
         # 5' w środku
         if 0 < five_prime.tetrade_no < max_level:
-            return
+            five_prime = self.nucl_quad[five_name]
 
 
         curr_pos = five_prime.position
