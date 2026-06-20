@@ -402,7 +402,7 @@ class Quadruplex:
 
         if os.getenv("draw_5prime"):
             self.ForceFivePrime()
-
+"""
             for nucl in self.nucl_quad.values():
                 nucl.connection_type = ConnType.UNKNOWN
                 nucl.flow_in = ConnFlow.UNKNOWN
@@ -419,7 +419,7 @@ class Quadruplex:
 
             self.DetermineConnectionTypes()
             self.CalculateFlow(self.chains[next(iter(self.chains))])
-
+"""
         
 
         # Update positions in tetrades. For Tetrade border
