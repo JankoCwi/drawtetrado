@@ -425,7 +425,7 @@ class Quadruplex:
             level = level + 1
 
 
-       if os.getenv("draw_5prime"):
+        if os.getenv("draw_5prime"):
            self.ForceFivePrime()
 
            for nucl in self.nucl_quad.values():
