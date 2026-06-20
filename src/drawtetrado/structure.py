@@ -197,6 +197,12 @@ class Quadruplex:
         shift = (3 - curr_pos) % 4
         self.Rotate(shift)
 
+        new_tetrads = [["", "", "", ""] for _ in range(len(self.tetrads))]
+        for name, nucl in self.nucl_quad.items():
+            new_tetrads[nucl.tetrade_no][nucl.position] = name
+        
+        self.tetrads = new_tetrads
+
 
         
     
@@ -400,26 +406,7 @@ class Quadruplex:
                     nucl.position = x
                     break
 
-        if os.getenv("draw_5prime"):
-            self.ForceFivePrime()
-"""
-            for nucl in self.nucl_quad.values():
-                nucl.connection_type = ConnType.UNKNOWN
-                nucl.flow_in = ConnFlow.UNKNOWN
-                nucl.flow_out = ConnFlow.UNKNOWN
-                nucl.connected_from = ""
-                nucl.connected_to = ""
-
-            
-                nucl.priority_conn = -1
-                nucl.priority_edge = -1
-                nucl.priority_nucl = -1
-                    
-            self.chains = self.GetChainFirstLast()
-
-            self.DetermineConnectionTypes()
-            self.CalculateFlow(self.chains[next(iter(self.chains))])
-"""
+     
         
 
         # Update positions in tetrades. For Tetrade border
@@ -438,7 +425,26 @@ class Quadruplex:
             level = level + 1
 
 
-        
+       if os.getenv("draw_5prime"):
+            self.ForceFivePrime()
+
+            for nucl in self.nucl_quad.values():
+                nucl.connection_type = ConnType.UNKNOWN
+                nucl.flow_in = ConnFlow.UNKNOWN
+                nucl.flow_out = ConnFlow.UNKNOWN
+                nucl.connected_from = ""
+
+            
+                nucl.priority_conn = -1
+                nucl.priority_edge = -1
+                nucl.priority_nucl = -1
+                    
+            self.chains = self.GetChainFirstLast()
+
+            self.DetermineConnectionTypes()
+            self.CalculateFlow(self.chains[next(iter(self.chains))])    
+
+    
     
 
     def DetermineConnectionTypes(self):
