@@ -426,23 +426,23 @@ class Quadruplex:
 
 
        if os.getenv("draw_5prime"):
-            self.ForceFivePrime()
+           self.ForceFivePrime()
 
-            for nucl in self.nucl_quad.values():
-                nucl.connection_type = ConnType.UNKNOWN
-                nucl.flow_in = ConnFlow.UNKNOWN
-                nucl.flow_out = ConnFlow.UNKNOWN
-                nucl.connected_from = ""
+           for nucl in self.nucl_quad.values():
+               nucl.connection_type = ConnType.UNKNOWN
+               nucl.flow_in = ConnFlow.UNKNOWN
+               nucl.flow_out = ConnFlow.UNKNOWN
+               nucl.connected_from = ""
 
             
-                nucl.priority_conn = -1
-                nucl.priority_edge = -1
-                nucl.priority_nucl = -1
+               nucl.priority_conn = -1
+               nucl.priority_edge = -1
+               nucl.priority_nucl = -1
                     
-            self.chains = self.GetChainFirstLast()
+           self.chains = self.GetChainFirstLast()
 
-            self.DetermineConnectionTypes()
-            self.CalculateFlow(self.chains[next(iter(self.chains))])    
+           self.DetermineConnectionTypes()
+           self.CalculateFlow(self.chains[next(iter(self.chains))])    
 
     
     
