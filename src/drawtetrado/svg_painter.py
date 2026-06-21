@@ -449,6 +449,18 @@ class SvgMaker:
 
     #Loop and bulge draw
     def DrawBulgeLoop(self, nucl_a, point_a, point_b):
+        
+    
+        if not hasattr(nucl_a, "connection_label"):
+            return
+
+        if nucl_a.connection_label <= 0:
+            return
+
+        if nucl_a.connection_label_type != "bulge" and \
+           nucl_a.connection_label_type != "loop":
+            return
+
 
         conf = self.config
         point_label = Point((point_a.x + point_b.x) / 2.0, \
