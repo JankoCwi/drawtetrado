@@ -164,88 +164,87 @@ class Nucleotide:
 class Quadruplex:
 
     
+    def AddLoopBulge(self, structure):
 
-        def AddLoopBulge(self, structure):
+        nucl_names = set(self.nucl_quad.keys())
 
-            nucl_names = set(self.nucl_quad.keys())
+        for quadruplex_loops in self.loops:
 
-            for quadruplex_loops in self.loops:
+            for loop in quadruplex_loops:
+                
+                loop_nucleotides = loop.get("nucleotides", [])
+                if len(loop_nucleotides) == 0:
+                    continue
 
-                for loop in quadruplex_loops:
-                    
-                    loop_nucleotides = loop.get("nucleotides", [])
-                    if len(loop_nucleotides) == 0:
+
+                loop_start = structure.nucleotides.get(loop_nucleotides[0])
+                loop_finish = structure.nucleotides.get(loop_nucleotides[-1])
+
+                prev_name = ""
+                next_name = ""
+                prev_index = -1
+                next_index = sys.maxsize
+
+                for name, nucl in self.nucl_quad.items():
+                    if nucl.chain != loop_start["chain"]:
+                        continue
+
+                    if nucl.index < loop_start["index"] and nucl.index > prev_index:
+                        prev_index = nucl.index
+                        prev_name = name
+
+                    if nucl.index > loop_finish["index"] and nucl.index < next_index:
+                        next_index = nucl.index
+                        next_name = name
+
+
+                if prev_name != "" and next_name != "":
+                    if self.nucl_quad[prev_name].connected_to == next_name:
+                        self.nucl_quad[prev_name].connection_label = len(loop_nucleotides)
+                        self.nucl_quad[prev_name].connection_label_type = "loop"
+
+
+        # BULGE
+        for tetrad_tracts in self.tracts:
+            for tract in tetrad_tracts:
+                for i in range(len(tract) - 1):
+                    nucl_a = tract[i]
+                    nucl_b = tract[i + 1]
+
+
+
+                    nucl_a = self.nucl_quad[nucl_a]
+                    nucl_b = self.nucl_quad[nucl_b]
+
+                    if nucl_a.chain != nucl_b.chain:
                         continue
 
 
-                    loop_start = structure.nucleotides.get(loop_nucleotides[0])
-                    loop_finish = structure.nucleotides.get(loop_nucleotides[-1])
-
-                    prev_name = ""
-                    next_name = ""
-                    prev_index = -1
-                    next_index = sys.maxsize
-
-                    for name, nucl in self.nucl_quad.items():
-                        if nucl.chain != loop_start["chain"]:
-                            continue
-
-                        if nucl.index < loop_start["index"] and nucl.index > prev_index:
-                            prev_index = nucl.index
-                            prev_name = name
-
-                        if nucl.index > loop_finish["index"] and nucl.index < next_index:
-                            next_index = nucl.index
-                            next_name = name
+                    id_start = min(nucl_a.index, nucl_b.index)
+                    id_finish = max(nucl_a.index, nucl_b.index)
+                    bulge_count = 0
 
 
-                    if prev_name != "" and next_name != "":
-                        if self.nucl_quad[prev_name].connected_to == next_name:
-                            self.nucl_quad[prev_name].connection_label = len(loop_nucleotides)
-                            self.nucl_quad[prev_name].connection_label_type = "loop"
+                    for name, data in structure.nucleotides.items():
+                        if data["chain"] == nucl_a.chain and \
+                        data["index"] > id_start and \
+                        data["index"] < id_finish and \
+                        name not in nucl_names:
+                            bulge_count += 1
 
+                    if bulge_count == 0:
+                        continue
 
-            # BULGE
-            for tetrad_tracts in self.tracts:
-                for tract in tetrad_tracts:
-                    for i in range(len(tract) - 1):
-                        nucl_a = tract[i]
-                        nucl_b = tract[i + 1]
+                    if nucl_a.connected_to == nucl_b:
+                        label_nucl = nucl_a
+                    elif nucl_b.connected_to == nucl_a:
+                        label_nucl = nucl_b
+                    else:
+                        continue
 
-
-
-                        nucl_a = self.nucl_quad[nucl_a]
-                        nucl_b = self.nucl_quad[nucl_b]
-
-                        if nucl_a.chain != nucl_b.chain:
-                            continue
-
-
-                        id_start = min(nucl_a.index, nucl_b.index)
-                        id_finish = max(nucl_a.index, nucl_b.index)
-                        bulge_count = 0
-
-
-                        for name, data in structure.nucleotides.items():
-                            if data["chain"] == nucl_a.chain and \
-                            data["index"] > id_start and \
-                            data["index"] < id_finish and \
-                            name not in nucl_names:
-                                bulge_count += 1
-
-                        if bulge_count == 0:
-                            continue
-
-                        if nucl_a.connected_to == nucl_b:
-                            label_nucl = nucl_a
-                        elif nucl_b.connected_to == nucl_a:
-                            label_nucl = nucl_b
-                        else:
-                            continue
-
-                        if label_nucl.connection_label == 0:
-                            label_nucl.connection_label = bulge_count
-                            label_nucl.connection_label_type = "bulge"
+                    if label_nucl.connection_label == 0:
+                        label_nucl.connection_label = bulge_count
+                        label_nucl.connection_label_type = "bulge"
 
 
 
