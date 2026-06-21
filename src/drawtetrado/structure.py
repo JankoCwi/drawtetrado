@@ -208,13 +208,13 @@ class Quadruplex:
         for tetrad_tracts in self.tracts:
             for tract in tetrad_tracts:
                 for i in range(len(tract) - 1):
-                    nucl_a = tract[i]
-                    nucl_b = tract[i + 1]
+                    a = tract[i]
+                    b = tract[i + 1]
 
 
 
-                    nucl_a = self.nucl_quad[nucl_a]
-                    nucl_b = self.nucl_quad[nucl_b]
+                    nucl_a = self.nucl_quad[a]
+                    nucl_b = self.nucl_quad[b]
 
                     if nucl_a.chain != nucl_b.chain:
                         continue
@@ -235,9 +235,9 @@ class Quadruplex:
                     if bulge_count == 0:
                         continue
 
-                    if nucl_a.connected_to == nucl_b:
+                    if nucl_a.connected_to == b:
                         label_nucl = nucl_a
-                    elif nucl_b.connected_to == nucl_a:
+                    elif nucl_b.connected_to == a:
                         label_nucl = nucl_b
                     else:
                         continue
