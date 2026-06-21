@@ -447,6 +447,49 @@ class SvgMaker:
         bezier.push(point_b)
         self.svg.add(bezier)
 
+    #Loop and bulge draw
+    def DrawBulgeLoop(self, nucl_a, point_a, point_b):
+
+        conf = self.config
+        point_label = Point((point_a.x + point_b.x) / 2.0, \
+                            (point_a.y + point_b.y) / 2.0)
+
+        self.svg.add(self.svg.circle(point_label, r = conf.point_size, \
+                stroke = self.GetColor("connection"), stroke_width = conf.point_stroke, \
+                stroke_opacity = self.GetAlpha("connection"), \
+                fill = self.GetColor("point"), fill_opacity = self.GetAlpha("point")))
+
+
+        label = str(nucl_a.connection_label)
+        font_size = conf.se_label_font_size
+        pos_str = Point(point_label.x, point_label.y + font_size / 5.0)
+        spacing = conf.se_label_spacing * 0.7
+
+
+        if nucl_a.position == 0 or nucl_a.position == 1:
+            pos_str.x -= spacing
+            anchor = "text-anchor:end"
+        else:
+            pos_str.x += spacing
+            anchor = "text-anchor:begin"
+
+
+        label_outline = self.svg.text(label, fill = self.GetColor("text"), \
+                transform = "translate({0}, {1})".format(pos_str.x, pos_str.y), \
+                style = anchor, font_size = font_size, font_weight = "bold", \
+                font_family = conf.font_family, \
+                stroke = "white", stroke_width = "2px", stroke_linejoin = "round")
+
+        label_fill = self.svg.text(label, fill = self.GetColor("text"), \
+                transform = "translate({0}, {1})".format(pos_str.x, pos_str.y), \
+                font_family = conf.font_family, \
+                style = anchor, font_size = font_size, font_weight = "bold")
+
+        self.svg.add(label_outline)
+        self.svg.add(label_fill)
+
+
+    
     def DrawConnection(self, nucl_a, nucl_quad):
         if nucl_a.connected_to == "":
             return
