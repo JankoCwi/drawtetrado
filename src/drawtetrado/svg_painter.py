@@ -534,6 +534,9 @@ class SvgMaker:
 
             #self.svg.add(line)
 
+        self.DrawBulgeLoop(nucl_a, point_a, point_b)
+        
+
     def DrawNucleotidePoint(self, nucl):
         #print("draw_point")
         conf = self.config
