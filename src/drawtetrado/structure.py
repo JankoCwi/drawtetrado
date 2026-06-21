@@ -450,7 +450,7 @@ class Quadruplex:
             # Loop
             single_loops = []
             single_loops.append(structure.loops[quadruplex_id][tetrad_id])
-            self.loops = single.loops
+            self.loops = single_loops
 
         
         else:
