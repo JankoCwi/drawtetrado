@@ -458,7 +458,7 @@ class Quadruplex:
             self.loops = structure.loops[quadruplex_id]
 
 
-        self.AddBulgeLoopVisualLabels(structure)
+        self.AddLoopBulge(structure)
 
 
     def GetNucleotidesPositions(self):
@@ -741,6 +741,7 @@ class Structure:
         self.tetrads_order = []
         self.single_tetrads = []
         self.tracts = []
+        self.loops = []
 
 
 
@@ -804,6 +805,7 @@ class Structure:
             single_tetrads_local = []
             tetrad_unordered = {}
             tracts_all = []
+            loops_all = []
             for _, quadruplex in enumerate(helice["quadruplexes"]):
                 tetrad_unordered_local = {}
                 for data in quadruplex["tetrads"]:
@@ -814,6 +816,11 @@ class Structure:
                     tracts_all.append(quadruplex["tracts"])
                 else:
                     tracts_all.append(list())
+                    
+                if "loops" in quadruplex:
+                    loops_all.append(quadruplex["loops"])
+                else:
+                    loops_all.append(list())
 
             # Order tetrads according to "tetrad_pairs" data.
             tetrad_pairs = helice["tetradPairs"]
@@ -854,6 +861,7 @@ class Structure:
                 self.tetrads.append(tetrad_unordered)
 
             self.tracts.append(tracts_all)
+            self.loops.append(loops_all)
             self.single_tetrads.append(single_tetrads_local)
         
         
