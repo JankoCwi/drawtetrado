@@ -16,7 +16,7 @@ V-loops and G4-helices (dimers).
 
     pip install drawtetrado
 
-# Dependencies
+# Dependencies 
 
 The project is written in Python 3.12+ and requires
 [pycairo](https://github.com/pygobject/pycairo),
