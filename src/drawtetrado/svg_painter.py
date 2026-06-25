@@ -5,6 +5,7 @@ from enum import Enum
 import cairo
 import tempfile
 import json
+import os
 
 class ConnType(Enum):
     SIMPLE = 1
@@ -467,15 +468,10 @@ class SvgMaker:
 
     # Loop and bulge draw.
     def DrawBulgeLoop(self, nucl_a, point_label):
-        if not hasattr(nucl_a, "connection_label"):
-            return
 
         if nucl_a.connection_label <= 0:
             return
 
-        if nucl_a.connection_label_type != "bulge" and \
-           nucl_a.connection_label_type != "loop":
-            return
 
         conf = self.config
 
