@@ -130,11 +130,20 @@ def main():
         action = "store_true",
         help = "Force 5' end on the bottom left of a visualization"
     )
+
+    parser.add_argument(
+        "--bulgeloop",
+        action = "store_true",
+        help = "Include bulges and loops on the visualization"
+    )
     
 
     args = parser.parse_args()
     if args.five_prime:
         os.environ["draw_5prime"] = "1"
+
+    if args.bulgeloop:
+        os.environ["draw_bulgeloop"] = "1"
 
     config = svg_painter.Config(1.0, args.config)
 
