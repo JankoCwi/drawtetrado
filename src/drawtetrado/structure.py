@@ -458,7 +458,8 @@ class Quadruplex:
             self.loops = structure.loops[quadruplex_id]
 
 
-        self.AddLoopBulge(structure)
+        if os.getenv("draw_bulgeloop"):
+            self.AddLoopBulge(structure)
 
 
     def GetNucleotidesPositions(self):
