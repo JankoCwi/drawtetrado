@@ -382,12 +382,24 @@ class SvgMaker:
         else:
             midpoint -= 6.0 * conf.stroke_width
 
-        line = self.svg.polyline([point_a, (point_a.x, point_a.y - midpoint), point_b], \
+        point_label = Point(point_a.x, point_a.y - midpoint)
+        line = self.svg.polyline([point_a, point_label, point_b], \
                 stroke = self.GetColor("connection"), stroke_width = conf.stroke_width, \
                 fill = "none", marker_mid = "url(#arrowhead)", \
                 stroke_opacity = self.GetAlpha("connection"))
 
         self.svg.add(line)
+
+        return point_label
+
+    def BezierPoint(self, point_a, control_a, control_b, point_b, t):
+        a = pow(1.0 - t, 3.0)
+        b = 3.0 * pow(1.0 - t, 2.0) * t
+        c = 3.0 * (1.0 - t) * pow(t, 2.0)
+        d = pow(t, 3.0)
+
+        return Point(a * point_a.x + b * control_a.x + c * control_b.x + d * point_b.x, \
+                     a * point_a.y + b * control_a.y + c * control_b.y + d * point_b.y)
 
     def DrawSameLevel(self, point_a, point_b, flow_out, flow_in, divisor):
         conf = self.config
@@ -395,13 +407,16 @@ class SvgMaker:
                 stroke_width = conf.stroke_width, fill = "none", \
                 stroke_opacity = self.GetAlpha("connection"))
         distance = point_a.Distance(point_b)
+        control_a = point_a + Point(0, flow_out.value * distance / divisor)
+        control_b = point_b + Point(0, flow_in.value * distance / divisor)
 
         bezier.push(point_a)
         bezier.push("C")
-        bezier.push(point_a + Point(0, flow_out.value * distance / divisor), \
-                    point_b + Point(0, flow_in.value * distance / divisor))
+        bezier.push(control_a, control_b)
         bezier.push(point_b)
         self.svg.add(bezier)
+
+        return self.BezierPoint(point_a, control_a, control_b, point_b, 0.5)
 
 
     def DrawSide(self, point_a, point_b, flow_out, flow_in, side, angle, divisor):
@@ -433,24 +448,25 @@ class SvgMaker:
         shift_x = distance * math.cos(radians) / divisor
         shift_y = distance * math.sin(radians) / divisor
         if side != Side.NONE:
-            bezier.push(point_a + Point(side.value * shift_x, flow_out.value * shift_y))
-            bezier.push(point_b + Point(side.value * shift_x, flow_in.value * shift_y))
+            control_a = point_a + Point(side.value * shift_x, flow_out.value * shift_y)
+            control_b = point_b + Point(side.value * shift_x, flow_in.value * shift_y)
         else:
             if point_a.x < point_b.x:
-                bezier.push(point_a + Point(shift_x, flow_out.value * shift_y))
-                bezier.push(point_b + Point(-shift_x, flow_in.value * shift_y))
+                control_a = point_a + Point(shift_x, flow_out.value * shift_y)
+                control_b = point_b + Point(-shift_x, flow_in.value * shift_y)
             else:
-                bezier.push(point_a + Point(-shift_x, flow_out.value * shift_y))
-                bezier.push(point_b + Point(shift_x, flow_in.value * shift_y))
+                control_a = point_a + Point(-shift_x, flow_out.value * shift_y)
+                control_b = point_b + Point(shift_x, flow_in.value * shift_y)
 
-
+        bezier.push(control_a)
+        bezier.push(control_b)
         bezier.push(point_b)
         self.svg.add(bezier)
 
-    #Loop and bulge draw
-    def DrawBulgeLoop(self, nucl_a, point_a, point_b):
-        
-    
+        return self.BezierPoint(point_a, control_a, control_b, point_b, 0.5)
+
+    # Loop and bulge draw.
+    def DrawBulgeLoop(self, nucl_a, point_label):
         if not hasattr(nucl_a, "connection_label"):
             return
 
@@ -461,22 +477,21 @@ class SvgMaker:
            nucl_a.connection_label_type != "loop":
             return
 
-
         conf = self.config
-        point_label = Point((point_a.x + point_b.x) / 2.0, \
-                            (point_a.y + point_b.y) / 2.0)
 
         self.svg.add(self.svg.circle(point_label, r = conf.point_size, \
                 stroke = self.GetColor("connection"), stroke_width = conf.point_stroke, \
                 stroke_opacity = self.GetAlpha("connection"), \
-                fill = self.GetColor("point"), fill_opacity = self.GetAlpha("point")))
+                fill = "#C8C8C8", fill_opacity = 1.0))
 
+        if nucl_a.connection_label_type == "loop":
+            label = "L" + str(nucl_a.connection_label)
+        else:
+            label = "B" + str(nucl_a.connection_label)
 
-        label = str(nucl_a.connection_label)
-        font_size = conf.se_label_font_size
+        font_size = conf.se_label_font_size * 0.75
         pos_str = Point(point_label.x, point_label.y + font_size / 5.0)
-        spacing = conf.se_label_spacing * 0.7
-
+        spacing = conf.se_label_spacing * 0.6
 
         if nucl_a.position == 0 or nucl_a.position == 1:
             pos_str.x -= spacing
@@ -484,7 +499,6 @@ class SvgMaker:
         else:
             pos_str.x += spacing
             anchor = "text-anchor:begin"
-
 
         label_outline = self.svg.text(label, fill = self.GetColor("text"), \
                 transform = "translate({0}, {1})".format(pos_str.x, pos_str.y), \
@@ -501,7 +515,7 @@ class SvgMaker:
         self.svg.add(label_fill)
 
 
-    
+
     def DrawConnection(self, nucl_a, nucl_quad):
         if nucl_a.connected_to == "":
             return
@@ -510,33 +524,34 @@ class SvgMaker:
         nucl_b = nucl_quad[nucl_a.connected_to]
         point_b = self.ShiftCoords(nucl_b.coords[nucl_b.position], self.base_shift)
 
+        point_label = None
         flow_out = nucl_a.flow_out
         flow_in = nucl_a.flow_in
         if nucl_a.connection_type == ConnType.SIMPLE:
-            self.DrawSimpleLine(point_a, point_b)
+            point_label = self.DrawSimpleLine(point_a, point_b)
         elif nucl_a.connection_type == ConnType.SAME_LEVEL:
             if (nucl_b.position == 0 and nucl_a.position == 2) or \
                 (nucl_b.position == 2 and nucl_a.position == 0):
-                self.DrawSameLevel(point_a, point_b, flow_out, flow_in, 3.5)
+                point_label = self.DrawSameLevel(point_a, point_b, flow_out, flow_in, 3.5)
             else:
-                self.DrawSameLevel(point_a, point_b, flow_out, flow_in, 2.5)
+                point_label = self.DrawSameLevel(point_a, point_b, flow_out, flow_in, 2.5)
         elif nucl_a.connection_type == ConnType.RIGHT:
-            self.DrawSide(point_a, point_b, flow_out, flow_in, Side.RIGHT, \
+            point_label = self.DrawSide(point_a, point_b, flow_out, flow_in, Side.RIGHT, \
                     self.config.angle, 3.5)
         elif nucl_a.connection_type == ConnType.LEFT:
-            self.DrawSide(point_a, point_b, flow_out, flow_in, Side.LEFT, \
+            point_label = self.DrawSide(point_a, point_b, flow_out, flow_in, Side.LEFT, \
                     self.config.angle, 3.5)
         elif nucl_a.connection_type == ConnType.RIGHT_CROSS:
-            self.DrawSide(point_a, point_b, flow_out, flow_in, Side.NONE, \
+            point_label = self.DrawSide(point_a, point_b, flow_out, flow_in, Side.NONE, \
                     80, 2.25)
         elif nucl_a.connection_type == ConnType.LEFT_CROSS:
-            self.DrawSide(point_a, point_b, flow_out, flow_in, Side.NONE, \
+            point_label = self.DrawSide(point_a, point_b, flow_out, flow_in, Side.NONE, \
                     80, 2.25)
         elif nucl_a.connection_type == ConnType.FRONT_BACK_CROSS:
-            self.DrawSide(point_a, point_b, flow_out, flow_in, Side.NONE, \
+            point_label = self.DrawSide(point_a, point_b, flow_out, flow_in, Side.NONE, \
                     80, 2.25)
         elif nucl_a.connection_type == ConnType.FRONT_TO_BACK:
-            self.DrawSide(point_a, point_b, flow_out, flow_in, Side.RIGHT, \
+            point_label = self.DrawSide(point_a, point_b, flow_out, flow_in, Side.RIGHT, \
                     45, 1.75)
         elif nucl_a.connection_type == ConnType.UNKNOWN:
             print("WARNINMG: Unknown connection type!")
@@ -546,8 +561,9 @@ class SvgMaker:
 
             #self.svg.add(line)
 
-        self.DrawBulgeLoop(nucl_a, point_a, point_b)
-        
+        if point_label != None:
+            self.DrawBulgeLoop(nucl_a, point_label)
+
 
     def DrawNucleotidePoint(self, nucl):
         #print("draw_point")
