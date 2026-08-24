@@ -283,7 +283,7 @@ class Quadruplex:
 
 
         curr_pos = five_prime.position
-        shift = (3 - curr_pos) % 4
+        shift = (1 - curr_pos) % 4
         self.Rotate(shift)
 
         new_tetrads = [["", "", "", ""] for _ in range(len(self.tetrads))]
