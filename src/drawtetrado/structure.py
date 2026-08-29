@@ -385,8 +385,15 @@ class Quadruplex:
 
             lw_pair = relation_map.get((order[0], order[1]),"")
 
-            if lw_pair == "cHW":
+            if onz.endswith("+"):
+                expected_lw = "cWH"
+            else:
+                expected_lw = "cHW"
+
+            if lw_pair != "" and lw_pair != expected_lw:
                 order = [order[0], order[3], order[2], order[1]]
+
+         
 
 
             '''
