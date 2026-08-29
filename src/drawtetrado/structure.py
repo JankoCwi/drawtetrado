@@ -318,6 +318,8 @@ class Quadruplex:
 
         
         link_map = {}
+        relation_map = {}
+        
         for p in pairs:
             if not p.get("inTetrad", False):
                 continue
@@ -331,8 +333,14 @@ class Quadruplex:
             a = p["nt1"]
             b = p["nt2"]
 
-            link_map.setdefault(a, set()).add(b)
-            link_map.setdefault(b, set()).add(a)
+            link_map.setdefault(a,set()).add(b)
+            link_map.setdefault(b,set()).add(a)
+            
+            relation_map[(a,b)] = lw
+            if lw == "cWH":
+                relation_map[(b,a)] = "cHW"
+            else:
+                relation_map[(b,a)] = "cWH"
     
         
         tetr_no = 0
@@ -375,19 +383,13 @@ class Quadruplex:
             if len(order) != 4:
                 order = [nt1, nt2, nt3, nt4]
 
-            
-            '''    Sprawdzanie obu relacji nt1-nt2 oraz nt2-nt1
-         
-            for p in pairs:
-            
-                if (p["nt1"] == nt1 and p["nt2"] == nt2) or \
-                   (p["nt1"] == nt2 and p["nt2"] == nt2):
-                       lw_pair = p.get("lw", "")
-                       break
-                 if lw_pair == "cHW":
-                    order = [order[0], order[3], order[2], order[1]]
-              '''
-           
+            lw_pair = relation_map.get((order[0], order[1]),"")
+
+            if lw_pair == "cHW":
+                order = [order[0], order[3], order[2], order[1]]
+
+
+            '''
             for p in pairs:
                 a,b = p["nt1"], p["nt2"]
 
@@ -395,8 +397,12 @@ class Quadruplex:
                     if p.get("lw") == "cHW":
                         order = [order[0], order[3], order[2], order[1]]
                     break
-               
-            
+             '''
+
+        
+
+
+        
     
             print("AFTER:", order)
 
